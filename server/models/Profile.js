@@ -1,7 +1,30 @@
-const { Schema, model } = require('mongoose');
-const bcrypt = require('bcrypt');
+const { Schema, model } = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const profileSchema = new Schema({
+const personSchema = new Schema({
+  //this is the actual node
+  name: { type: String }, //leave as not required, incase a relative isnt known, but their decendants/acendants are
+  deathDate: { type: Date }, //
+  birthday: { type: Date }, //used for data, as well as for reminding the user through email if isClose is selected
+  parents: [this],
+  //picture
+  createdBy: [{ type: Schema.Types.ObjectId, ref: "User" }], //need to limit this to two through resolvers
+  children: [this],
+  isClose: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  isLinked: {
+    //this field can only be changed by linking someone to the site
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+});
+
+const userSchema = new Schema({
+  // this schema is what the user creates to control login, links to their ancestry through personSchema
   name: {
     type: String,
     required: true,
@@ -12,24 +35,19 @@ const profileSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    match: [/.+@.+\..+/, 'Must match an email address!'],
+    match: [/.+@.+\..+/, "Must match an email address!"],
   },
   password: {
     type: String,
     required: true,
     minlength: 5,
   },
-  skills: [
-    {
-      type: String,
-      trim: true,
-    },
-  ],
+  person: { type: Schema.Types.ObjectId, ref: "Person" },
 });
 
 // set up pre-save middleware to create password
-profileSchema.pre('save', async function (next) {
-  if (this.isNew || this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (this.isNew || this.isModified("password")) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
@@ -38,10 +56,12 @@ profileSchema.pre('save', async function (next) {
 });
 
 // compare the incoming password with the hashed password
-profileSchema.methods.isCorrectPassword = async function (password) {
+userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const Profile = model('Profile', profileSchema);
+const User = model("User", userSchema);
 
-module.exports = Profile;
+const Person = model("Person", personSchema);
+
+module.exports = { Person, User };

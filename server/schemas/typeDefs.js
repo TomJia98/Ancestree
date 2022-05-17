@@ -1,34 +1,59 @@
-const { gql } = require('apollo-server-express');
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
-  type Profile {
-    _id: ID
+  scalar Date
+
+  type User {
+    _id: ID!
     name: String
     email: String
     password: String
-    skills: [String]!
+    person: Person!
+  }
+
+  type Person {
+    _id: ID!
+    name: String
+    deathDate: Date
+    birthday: Date
+    createdBy: [ID!]
+    parents: [Person]
+    children: [Person]
+    isClose: Boolean!
+    isLinked: Boolean!
   }
 
   type Auth {
     token: ID!
-    profile: Profile
+    profile: User
   }
 
   type Query {
-    profiles: [Profile]!
-    profile(profileId: ID!): Profile
-    # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
-    me: Profile
+    persons: [Person]!
+    person(personId: ID!): Person
   }
 
   type Mutation {
-    addProfile(name: String!, email: String!, password: String!): Auth
-    login(email: String!, password: String!): Auth
+    addPerson(
+      name: String!
+      deathDate: Date!
+      birthday: Date!
+      createdBy: [ID!]
+      parents: [ID!]
+      children: [ID!]
+      isClose: Boolean!
+    ): Auth
 
-    addSkill(profileId: ID!, skill: String!): Profile
-    removeProfile: Profile
-    removeSkill(skill: String!): Profile
+    addUser(
+      name: String!
+      email: String!
+      password: String!
+      birthday: Date
+    ): Auth
+
+    login(email: String!, password: String!): Auth
   }
 `;
+// removeUser(deleteAll: Boolean!): Auth // get this working at a later date
 
 module.exports = typeDefs;
