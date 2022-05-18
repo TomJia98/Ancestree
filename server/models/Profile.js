@@ -6,10 +6,10 @@ const personSchema = new Schema({
   name: { type: String }, //leave as not required, incase a relative isnt known, but their decendants/acendants are
   deathDate: { type: Date }, //
   birthday: { type: Date }, //used for data, as well as for reminding the user through email if isClose is selected
-  parents: [this],
+  parents: [{ type: String }],
   //picture
   createdBy: [{ type: Schema.Types.ObjectId, ref: "User" }], //need to limit this to two through resolvers
-  children: [this],
+  children: [{ type: String }],
   isClose: {
     type: Boolean,
     required: true,

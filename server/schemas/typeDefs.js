@@ -17,8 +17,8 @@ const typeDefs = gql`
     deathDate: Date
     birthday: Date
     createdBy: [ID!]
-    parents: [Person]
-    children: [Person]
+    parents: [String]
+    children: [String]
     isClose: Boolean!
     isLinked: Boolean!
   }
@@ -36,13 +36,23 @@ const typeDefs = gql`
   type Mutation {
     addPerson(
       name: String!
-      deathDate: Date!
-      birthday: Date!
-      createdBy: [ID!]
-      parents: [ID!]
-      children: [ID!]
+      deathDate: Date
+      birthday: Date
+      createdBy: [ID]
+      parents: [String]
+      children: [String]
       isClose: Boolean!
     ): Auth
+
+    updatePerson(
+      _ID: ID!
+      name: String
+      deathDate: Date
+      birthday: Date
+      parents: [String]
+      children: [String]
+      isClose: Boolean
+    ): Person
 
     addUser(
       name: String!
@@ -54,6 +64,7 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
   }
 `;
-// removeUser(deleteAll: Boolean!): Auth // get this working at a later date
+// removeUser(deleteAll: Boolean!): Auth
+// get this working at a later date
 
 module.exports = typeDefs;
