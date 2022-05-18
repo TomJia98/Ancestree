@@ -34,6 +34,9 @@ const resolvers = {
     person: async (parent, { personId }) => {
       return Person.findOne({ _id: personId });
     },
+    users: async (parent, args, context) => {
+      return User.find();
+    },
   },
   Mutation: {
     addPerson: async (
@@ -44,6 +47,11 @@ const resolvers = {
       const user = context.user;
       if (!user) {
         return new Error("user is not logged in");
+      }
+      if (parents) {
+        if (parents.length > 2) {
+          return new Error("cant have more than 2 parents");
+        }
       }
       try {
         await Person.create({
@@ -74,44 +82,33 @@ const resolvers = {
       if (!user) {
         return new Error("No User is logged in");
       }
+      if (parents) {
+        if (parents.length > 2) {
+          return new Error("cant have more than 2 parents");
+        }
+      }
+
       const updatingPerson = await Person.findOne({
-        _ID: _ID,
+        _id: _ID,
         createdBy: user._id,
       });
 
       if (updatingPerson) {
-        if (isEqual(parents, updatingPerson.parents)) {
-          //this runs if the two are the same
-          const updatedPerson = await Person.findOneAndUpdate(
-            { _ID: _ID },
-            {
-              name,
-              deathDate,
-              birthday,
-              children,
-              isClose,
-            },
-            { new: true }
-          );
-          return updatedPerson;
-        } else if (
-          !alsoContains(parents, updatingPerson.parents) &&
-          parents >= 2
-        ) {
-          const updatedPerson = await Person.findOneAndUpdate(
-            { _ID: _ID },
-            {
-              name,
-              deathDate,
-              birthday,
-              parents,
-              children,
-              isClose,
-            },
-            { new: true }
-          );
-          return updatedPerson;
-        }
+        //this runs if the two are the same
+        const updatedPerson = await Person.findOneAndUpdate(
+          { _id: _ID },
+          {
+            name,
+            deathDate,
+            birthday,
+            parents,
+            children,
+            isClose,
+          },
+          { new: true }
+        );
+        console.log(updatedPerson + `person ${updatingPerson.name}`);
+        return updatedPerson;
       } else {
         return new Error("cannot find person");
       }
