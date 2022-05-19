@@ -6,20 +6,21 @@ const { GraphQLDateTime } = require("graphql-iso-date");
 const customScalarResolver = {
   Date: GraphQLDateTime,
 };
-function alsoContains(a, b) {
-  for (var i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
-  return true;
-}
 
-function isEqual(a, b) {
-  // If length is not equal
-  if (a.length != b.length) return false;
-  else {
-    // Comparing each element of array
-    for (var i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
-    return true;
-  }
-}
+// function alsoContains(a, b) {
+//   for (var i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
+//   return true;
+// }
+
+// function isEqual(a, b) {
+//   // If length is not equal
+//   if (a.length != b.length) return false;
+//   else {
+//     // Comparing each element of array
+//     for (var i = 0; i < a.length; i++) if (a[i] != b[i]) return false;
+//     return true;
+//   }
+// }
 
 const resolvers = {
   Query: {
@@ -54,7 +55,7 @@ const resolvers = {
         }
       }
       try {
-        await Person.create({
+        const newPerson = await Person.create({
           name,
           deathDate,
           birthday,
@@ -64,9 +65,8 @@ const resolvers = {
           isLinked: false,
           createdBy: user._id,
         });
-        const token = signToken(user);
 
-        return { token, user };
+        return newPerson;
       } catch (err) {
         console.log(err);
         return err;
@@ -136,6 +136,44 @@ const resolvers = {
         return err;
       }
     },
+
+    deletePerson: async (parent, { _ID }, context) => {
+      const user = context.user;
+      if (!user) {
+        return new Error("user not logged in!");
+      }
+      const findPerson = await Person.findOne({ _id: _ID });
+      if (findPerson.children.length === 0 && findPerson.parents.length === 0) {
+        await findOneAndDelete({ _id: _ID });
+        return `${findPerson.name} has been deleted with all traces`;
+      } else if (
+        findPerson.children.length === 0 &&
+        findPerson.parents.length !== 0
+      ) {
+        const parents = findPerson.parents;
+        console.log(parents);
+        for (let i = 0; i < parents.length; i++) {
+          await Person.findOneAndUpdate(
+            { _id: parents[i] },
+            {
+              $pull: {
+                children: { _id: _ID },
+              },
+            }
+          ); //go through the selected person to delete and scrub them from their parents children array
+        }
+        return `${findPerson.name} has been deleted with all traces`;
+      } else if (findPerson.children.length !== 0) {
+        await Person.findOneAndUpdate({
+          name: "",
+          deathDate: "",
+          birthday: "",
+          isclose: false,
+          isLinked: false,
+        });
+        return `${findPerson.name}'s details have been removed, but links kept intact`;
+      }
+    },
     login: async (parent, { email, password }, context) => {
       const user = await User.findOne({ email });
 
@@ -156,26 +194,3 @@ const resolvers = {
 };
 
 module.exports = { resolvers, customScalarResolver };
-
-// {
-//   "data": {
-//     "persons": [
-//       {
-//         "_id": "6284b654dccd1e12c2b140b7",
-//         "name": "Jeff"
-//       },
-//       {
-//         "_id": "6284bc2ec33d5e3289c25406",
-//         "name": "sam"
-//       },
-//       {
-//         "_id": "6284bc4ac33d5e3289c25408",
-//         "name": "samie"
-//       },
-//       {
-//         "_id": "6284bc60c33d5e3289c2540a",
-//         "name": "samieeee"
-//       }
-//     ]
-//   }
-// }

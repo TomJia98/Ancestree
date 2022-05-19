@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const ADD_USER = gql`
-  mutation addUser($name: String!, $email: String!, $password: String!, $birthday, Date) {
+  mutation addUser($name: String!, $email: String!, $password: String!, $birthday: Date) {
     addUser(name: $name, email: $email, password: $password, birthday: $birthday) {
       token
       User {
@@ -12,34 +12,77 @@ export const ADD_USER = gql`
   }
 `;
 
-export const ADD_SKILL = gql`
-  mutation addSkill($profileId: ID!, $skill: String!) {
-    addSkill(profileId: $profileId, skill: $skill) {
-      _id
+export const ADD_PERSON = gql`
+  mutation addPerson(
+    $name: String!,
+    $deathDate: Date,
+    $birthday: Date,
+    $createdBy: [ID],
+    $parents: [String],
+    $children: [String],
+    $isClose: Boolean!
+  ) {
+    addPerson(
+      name: $name,
+      deathDate: $deathDate,
+      birthday: $birthday,
+      createdBy: $createdBy,
+      parents: $parents,
+      children: $children,
+      isClose: $isClose,
+    ) {
       name
-      skills
+      deathDate
+      birthday
+      createdBy
+      parents
+      children
+      isClose
     }
   }
+`;
+
+export const UPDATE_PERSON = gql`
+mutation updatePerson(
+  $_ID: ID!,
+  $name: String!,
+  $deathDate: Date,
+  $birthday: Date,
+  $parents: [String],
+  $children: [String],
+  $isClose: Boolean!,
+) {
+  updatePerson(
+    _ID: $_ID,
+    name: $name,
+    deathDate: $deathDate,
+    birthday: $birthday,
+    parents: $parents,
+    children: $children,
+    isClose: $isClose,
+  ) {
+    name
+    deathDate
+    birthday
+    parents
+    children
+    isClose
+  }
+}
 `;
 
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
-      profile {
-        _id
-        name
-      }
     }
   }
 `;
 
-export const REMOVE_SKILL = gql`
-  mutation removeSkill($skill: String!) {
-    removeSkill(skill: $skill) {
-      _id
-      name
-      skills
+export const DELETE_PERSON = gql`
+  mutation deletePerson($_ID: ID!) {
+    deletePerson(_ID: $_ID) {
+      String
     }
   }
 `;

@@ -29,7 +29,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    persons: [Person]!
+    persons: [Person]
     person(personId: ID!): Person
     users: [User]
   }
@@ -43,7 +43,7 @@ const typeDefs = gql`
       parents: [String]
       children: [String]
       isClose: Boolean!
-    ): Auth
+    ): Person
 
     updatePerson(
       _ID: ID!
@@ -54,6 +54,8 @@ const typeDefs = gql`
       children: [String]
       isClose: Boolean
     ): Person
+
+    deletePerson(_ID: ID!): String
 
     addUser(
       name: String!

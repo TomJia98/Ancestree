@@ -1,31 +1,44 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-export const QUERY_PROFILES = gql`
-  query allProfiles {
-    profiles {
+export const QUERY_PERSONS = gql`
+  query Persons {
+    Person {
       _id
       name
-      skills
+      deathDate
+      birthday
+      createdBy
+      parents
+      children
+      isClose
+      isLinked
     }
   }
 `;
 
-export const QUERY_SINGLE_PROFILE = gql`
-  query singleProfile($profileId: ID!) {
-    profile(profileId: $profileId) {
+export const QUERY_SINGLE_PERSON = gql`
+  query singleProfile($personId: ID!) {
+    Person(personId: $personId) {
       _id
       name
-      skills
+      deathDate
+      birthday
+      createdBy
+      parents
+      children
+      isClose
+      isLinked
     }
   }
 `;
 
-export const QUERY_ME = gql`
-  query me {
-    me {
+export const QUERY_USERS = gql`
+  query users {
+    User {
       _id
       name
-      skills
+      email
+      person
     }
   }
 `;
