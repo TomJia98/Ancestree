@@ -121,6 +121,7 @@ const resolvers = {
           isLinked: true,
           isClose: false,
         });
+        console.log(newPerson)
         const user = await User.create({
           name,
           email,

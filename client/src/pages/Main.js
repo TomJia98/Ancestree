@@ -1,37 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@apollo/client";
-import { QUERY_SINGLE_PERSON, QUERY_PERSONS } from '../utils/queries';
+import { v4 as uuidv4 } from 'uuid'
+// import { useQuery } from "@apollo/client";
+// import { QUERY_SINGLE_PERSON, QUERY_PERSONS } from '../utils/queries';
 import Graph from "react-graph-vis";
 import Auth from "../utils/auth";
+import SinglePersonInfo from "../components/SinglePersonInfo"
 const Main = () => {
-const user = Auth.getProfile();
+  
+  let [graphKey, setGraphKey] = useState(uuidv4)
+  const [selectedNode, setSelectedNode] = useState("")//add the logged in users person here as default
+
+// const user = Auth.getProfile();
     // const {loading, data} = useQuery(
 
 
     // )
 
-
+//ideas for how to graph out the data
+//need to go to the first parent,(parents==0) then search for children in a loop. for each child layer searched, increase the level by 1 
     const graph = {
       nodes: [
-        { id: 1, label: "parent 1", title: "node 1 tootip text" },
-        { id: 2, label: "parent 2", title: "node 2 tootip text" },
-        { id: 3, label: "child 1", title: "node 3 tootip text" },
-        { id: 4, label: "child 2", title: "node 4 tootip text" },
+        { id: "parent 1", label: "parent 1", title: "node 1 tootip text" , level: 1},
+        //to add a new line, use \n. size of nodes adapts to the change in text
+        { id: 2, label: "parent 2", title: "node 2 tootip text", level: 1},
+        { id: "child 2", label: "child 2", title: "node 4 tootip text", level: 2},
+        { id: 3, label: "child 1", title: "node 3 tootip text", level: 2},
+        { id: 5, label: "child 3", title: "node 4 tootip text", level: 2},
+        { id: 6, label: "parent 3", title: "node 4 tootip text", level: 1},
+        { id: 7, label: "granchild 1", title: "node 4 tootip text", level: 3},
         // { id: 5, label: "Node 5", title: "node 5 tootip text" }
       ],
       edges: [
-        { from: 1, to: 3 },
-        { from: 1, to: 4 },
-        { from: 2, to: 4 },
+        { from: "parent 1", to: 3 },
+        { from: "parent 1", to: "child 2" },
+        { from: 2, to: "child 2" },
         { from: 2, to: 3 },
+        { from: 6, to: 5 },
+        { from: 5, to: 7 },
+        { from: 3, to: 7 },
         // { from: 2, to: 5 }
       ]
     };
   
     const options = {
       layout: {
-        hierarchical: false
+        hierarchical: true
       },
       edges: {
         color: "#000000"
@@ -39,9 +53,13 @@ const user = Auth.getProfile();
       height: "500px"
     };
   
+ 
     const events = {
       select: function(event) {
         var { nodes, edges } = event;
+        console.log(nodes[0])   
+        console.log(edges)
+setSelectedNode(nodes[0])
       }
     };
 
@@ -49,7 +67,10 @@ const user = Auth.getProfile();
   return (
     <main>
       { Auth.loggedIn() ? (<>
+      < SinglePersonInfo current={selectedNode}/>
+        
         <Graph
+      key={graphKey}
       graph={graph}
       options={options}
       events={events}
