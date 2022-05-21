@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import Auth from "../utils/auth";
 
 const Landing = () => {
-  console.log(Auth.getProfile())
+ if(Auth.loggedIn()) console.log(Auth.getProfile())
   return (
     <main>
         { Auth.loggedIn() ? (<><Link to="/main">IsLogged</Link>
