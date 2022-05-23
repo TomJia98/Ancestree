@@ -16,6 +16,15 @@ export const QUERY_PERSONS = gql`
   }
 `;
 
+export const QUERY_PERSONS_NAME_ID = gql`
+  query Persons {
+    persons {
+      _id
+      name
+    }
+  }
+`;
+
 export const QUERY_SINGLE_PERSON = gql`
   query singleProfile($personId: ID!) {
     person(personId: $personId) {
