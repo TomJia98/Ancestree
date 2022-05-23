@@ -8,7 +8,7 @@ const personSchema = new Schema({
   birthday: { type: Date }, //used for data, as well as for reminding the user through email if isClose is selected
   parents: [{ type: String }],
   //picture
-  createdBy: [{ type: Schema.Types.ObjectId, ref: "User" }], //need to limit this to two through resolvers
+  createdBy: [{ type: String}], //need to limit this to two through resolvers
   children: [{ type: String }],
   isClose: {
     type: Boolean,
@@ -42,7 +42,7 @@ const userSchema = new Schema({
     required: true,
     minlength: 5,
   },
-  person: { type: Schema.Types.ObjectId, ref: "Person" },
+  person: { type: String },
 });
 
 // set up pre-save middleware to create password

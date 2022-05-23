@@ -115,20 +115,28 @@ const resolvers = {
     },
     addUser: async (parent, { name, email, password, birthday }, context) => {
       try {
+        console.log('creating new user named ' + name)
         const newPerson = await Person.create({
           name,
           birthday,
           isLinked: true,
           isClose: false,
         });
-        console.log(newPerson)
+        console.log(newPerson._id)
+        const id = newPerson._id.toString()
+        console.log(id)
+        
+        
         const user = await User.create({
           name,
           email,
           password,
-          person: { _id: newPerson._id },
+          person:id,
         });
+        const userId = user._id.toString()
 
+        const updatedPerson = await Person.findOneAndUpdate({...newPerson},{createdBy:[userId]},{new:true})
+console.log(updatedPerson)
         const token = signToken(user);
 
         return { token, user };

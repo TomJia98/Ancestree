@@ -5,18 +5,18 @@ const typeDefs = gql`
 
   type User {
     _id: ID!
-    name: String
-    email: String
-    password: String
-    person: Person!
+    name: String!
+    email: String!
+    password: String!
+    person: String!
   }
 
   type Person {
     _id: ID!
     name: String
-    deathDate: Date
-    birthday: Date
-    createdBy: [ID!]
+    deathDate: String!
+    birthday: String!
+    createdBy: [String!]
     parents: [String]
     children: [String]
     isClose: Boolean!
@@ -25,7 +25,7 @@ const typeDefs = gql`
 
   type Auth {
     token: ID!
-    profile: User
+    User: User
   }
 
   type Query {
@@ -37,9 +37,9 @@ const typeDefs = gql`
   type Mutation {
     addPerson(
       name: String!
-      deathDate: Date
-      birthday: Date
-      createdBy: [ID]
+      deathDate: String!
+      birthday: String!
+      createdBy: [String]
       parents: [String]
       children: [String]
       isClose: Boolean!
@@ -48,8 +48,8 @@ const typeDefs = gql`
     updatePerson(
       _ID: ID!
       name: String
-      deathDate: Date
-      birthday: Date
+      deathDate: String!
+      birthday: String!
       parents: [String]
       children: [String]
       isClose: Boolean
@@ -61,7 +61,7 @@ const typeDefs = gql`
       name: String!
       email: String!
       password: String!
-      birthday: Date
+      birthday: String!
     ): Auth
 
     login(email: String!, password: String!): Auth
