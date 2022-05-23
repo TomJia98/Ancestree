@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const QUERY_PERSONS = gql`
   query Persons {
-    Person {
+    persons {
       _id
       name
       deathDate
@@ -18,10 +18,9 @@ export const QUERY_PERSONS = gql`
 
 export const QUERY_SINGLE_PERSON = gql`
   query singleProfile($personId: ID!) {
-    Person(personId: $personId) {
+    person(personId: $personId) {
       _id
       name
-      deathDate
       birthday
       createdBy
       parents

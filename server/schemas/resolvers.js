@@ -21,22 +21,28 @@ const customScalarResolver = {
 //     return true;
 //   }
 // }
+//old functions, might be used later
 
 const resolvers = {
   Query: {
     persons: async (parent, args, context) => {
       console.log(context.user);
+      console.log("---------------------------- contxt.usr");
       const userId = context.user._id;
       if (!userId) {
         return new Error("user is not logged in");
       }
-      return Person.find({ createdBy: userId });
+      return await Person.find({ createdBy: userId });
     },
     person: async (parent, { personId }) => {
-      return Person.findOne({ _id: personId });
+      console.log(personId);
+      const person = await Person.findById(personId);
+      console.log(person);
+      return person;
     },
     users: async (parent, args, context) => {
-      return User.find();
+      const users = await User.find();
+      return users;
     },
   },
   Mutation: {
@@ -115,28 +121,31 @@ const resolvers = {
     },
     addUser: async (parent, { name, email, password, birthday }, context) => {
       try {
-        console.log('creating new user named ' + name)
+        console.log("creating new user named " + name);
         const newPerson = await Person.create({
           name,
           birthday,
           isLinked: true,
           isClose: false,
         });
-        console.log(newPerson._id)
-        const id = newPerson._id.toString()
-        console.log(id)
-        
-        
+        console.log(newPerson._id);
+        const id = newPerson._id.toString();
+        console.log(id);
+
         const user = await User.create({
           name,
           email,
           password,
-          person:id,
+          person: id,
         });
-        const userId = user._id.toString()
+        const userId = user._id.toString();
 
-        const updatedPerson = await Person.findOneAndUpdate({...newPerson},{createdBy:[userId]},{new:true})
-console.log(updatedPerson)
+        const updatedPerson = await Person.findByIdAndUpdate(
+          { _id: newPerson._id },
+          { createdBy: [userId] },
+          { new: true }
+        );
+        console.log(updatedPerson);
         const token = signToken(user);
 
         return { token, user };

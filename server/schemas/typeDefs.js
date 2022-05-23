@@ -14,8 +14,8 @@ const typeDefs = gql`
   type Person {
     _id: ID!
     name: String
-    deathDate: String!
-    birthday: String!
+    deathDate: String
+    birthday: String
     createdBy: [String!]
     parents: [String]
     children: [String]
