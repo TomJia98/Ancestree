@@ -1,5 +1,17 @@
 import { gql } from "@apollo/client";
 
+export const UPDATE_CHILDREN_AND_PARENTS = gql`
+  mutation updateRelations($_ID: ID!, $children: String, $parents: String) {
+    updateRelations(_ID: $_ID, children: $children, parents: $parents)
+  }
+  {
+    _id
+    name
+    parents
+    children
+  }
+`;
+
 export const ADD_USER = gql`
   mutation addUser(
     $name: String!
@@ -29,7 +41,7 @@ export const ADD_PERSON = gql`
     $birthday: String
     $parents: [String]
     $children: [String]
-    $isClose: Boolean!
+    $isClose: Boolean
   ) {
     addPerson(
       name: $name
@@ -39,6 +51,7 @@ export const ADD_PERSON = gql`
       children: $children
       isClose: $isClose
     ) {
+      _id
       name
       deathDate
       birthday
@@ -53,12 +66,12 @@ export const ADD_PERSON = gql`
 export const UPDATE_PERSON = gql`
   mutation updatePerson(
     $_ID: ID!
-    $name: String!
+    $name: String
     $deathDate: String
     $birthday: String
     $parents: [String]
     $children: [String]
-    $isClose: Boolean!
+    $isClose: Boolean
   ) {
     updatePerson(
       _ID: $_ID
@@ -69,6 +82,7 @@ export const UPDATE_PERSON = gql`
       children: $children
       isClose: $isClose
     ) {
+      _id
       name
       deathDate
       birthday

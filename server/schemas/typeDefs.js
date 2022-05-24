@@ -37,19 +37,21 @@ const typeDefs = gql`
   type Mutation {
     addPerson(
       name: String!
-      deathDate: String!
-      birthday: String!
+      deathDate: String
+      birthday: String
       createdBy: [String]
       parents: [String]
       children: [String]
-      isClose: Boolean!
+      isClose: Boolean
     ): Person
+
+    updateRelations(_ID: ID!, children: String, parents: String): Person
 
     updatePerson(
       _ID: ID!
       name: String
-      deathDate: String!
-      birthday: String!
+      deathDate: String
+      birthday: String
       parents: [String]
       children: [String]
       isClose: Boolean

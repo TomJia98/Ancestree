@@ -13,8 +13,14 @@ import CreatableSelect from "react-select/creatable";
 //with an option for a new person if that selected
 //finish the other inputs, need a boolean slider for isClose
 const AddChild = (props) => {
+  let newParentName = null;
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
-
+  const { loading: currentLoading, data: currentData } = useQuery(
+    QUERY_SINGLE_PERSON,
+    {
+      variables: { personId: props.personId },
+    }
+  );
   const namesAndIds = props.personsIdAndNameArr.persons;
   let options = [];
   namesAndIds.forEach((el) => {
@@ -25,11 +31,15 @@ const AddChild = (props) => {
 
   const handleMultiChange = (e) => {
     console.log(e);
+    if (!options.find((x) => x.value === e[0].value)) {
+      console.log("parent not found, creating new");
+      console.log(e[0].value);
+      //if the selected name is new
+      newParentName = e[0].value;
+      return;
+      //create new person based on the new inputted name, and save them as a parent to the child being added
+    }
     setFormState({ ...formState, parents: [e.value, props.personId] });
-    //     if(options.find((x =>x.value === e.value)===undefined)){
-    // //create new person based on the new inputted name, and save them as a parent to the child being added
-
-    //     }
   };
 
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);
@@ -54,29 +64,73 @@ const AddChild = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+    console.log(formState);
     try {
-      const response = await createPerson({
-        //adding the createdBy arr is done serverside
-        variables: {
-          ...formState,
-        },
-      });
-      if (!response.data) {
-        throw new Error("something went wrong!");
+      if (newParentName !== null) {
+        console.log(newParentName);
+        const newBlankParent = await createPerson({
+          //creating the new parent
+          variables: { name: newParentName, isClose: false },
+        });
+        const NewParentId = newBlankParent.data.addPerson._id;
+        console.log(newBlankParent);
+        const newParentAndChild = await createPerson({
+          //creating the new child and adding the current user and new parent
+          variables: {
+            name: formState.name,
+            deathDate: formState.deathDate,
+            birthday: formState.birthday,
+            birthday: formState.birthday,
+            parents: [NewParentId, props.personId],
+            children: [],
+            isclose: formState.isClose,
+          },
+        });
+        const newChildId = newParentAndChild.data.addPerson._id;
+        await updatePerson({
+          //updating the blank parent with the new childs id
+          variables: { _ID: NewParentId, children: [newChildId] },
+        });
+        const currentChildren = currentData.person.children;
+        if (currentChildren.length === 0) {
+          await updatePerson({
+            variables: {
+              _ID: props.personId, //updating the current logged in person with new child
+              children: [newChildId],
+            },
+          });
+        } else {
+          console.log(currentData);
+          currentChildren.push(newChildId);
+          await updatePerson({
+            variables: {
+              _ID: props.personId, //updating the current logged in person with new child
+              children: [currentChildren],
+            },
+          });
+        }
+        setFormState({
+          name: "",
+          deathDate: "",
+          birthday: "",
+          parents: [],
+          children: [],
+          isClose: false,
+        });
+        props.addChildShow(); //close the add child section upon completion
+      } //create new parent and new child complete, below need to do for existing parent
+      else {
+        const newChild = await createPerson({
+          variables: { ...formState },
+        });
+        // for(let i = 0; i<newChild.parents.length; i++){
+        // const parentToAdd = await
+
+        // }
       }
-      console.log(response);
     } catch (e) {
       console.error(e);
     }
-
-    setFormState({
-      name: "",
-      deathDate: "",
-      birthday: "",
-      parents: [],
-      children: [],
-      isClose: false,
-    });
   };
 
   return (
