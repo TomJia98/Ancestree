@@ -26,8 +26,6 @@ const customScalarResolver = {
 const resolvers = {
   Query: {
     persons: async (parent, args, context) => {
-      console.log(context.user);
-      console.log("---------------------------- contxt.usr");
       const userId = context.user._id;
       if (!userId) {
         return new Error("user is not logged in");
@@ -35,9 +33,7 @@ const resolvers = {
       return await Person.find({ createdBy: userId });
     },
     person: async (parent, { personId }) => {
-      console.log(personId);
       const person = await Person.findById(personId);
-      console.log(person);
       return person;
     },
     users: async (parent, args, context) => {
@@ -86,15 +82,19 @@ const resolvers = {
       }
       try {
         const updatingPerson = await Person.findById({ _id: _ID });
-        if (updatingPerson.parents.length < 2 && parents) {
-          const updatePerson = await Person.findByIdAndUpdate(
-            { _id: _ID },
-            {
-              $push: { parents: parents, children: children },
-            },
-            { new: true }
-          );
-          return updatePerson;
+        if (updatingPerson.parents.length < 2) {
+          try {
+            const updatePerson = await Person.findByIdAndUpdate(
+              { _id: _ID },
+              {
+                $push: { parents: parents, children: children },
+              },
+              { new: true }
+            );
+            return updatePerson;
+          } catch (e) {
+            console.log(e);
+          }
         }
       } catch (e) {
         console.log(e);
@@ -135,7 +135,6 @@ const resolvers = {
           },
           { new: true }
         );
-        console.log(updatedPerson + `person ${updatingPerson.name}`);
         return updatedPerson;
       } else {
         return new Error("cannot find person");
@@ -150,9 +149,7 @@ const resolvers = {
           isLinked: true,
           isClose: false,
         });
-        console.log(newPerson._id);
         const id = newPerson._id.toString();
-        console.log(id);
 
         const user = await User.create({
           name,
@@ -167,7 +164,6 @@ const resolvers = {
           { createdBy: [userId] },
           { new: true }
         );
-        console.log(updatedPerson);
         const token = signToken(user);
 
         return { token, user };
