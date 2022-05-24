@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, Component, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import {
@@ -6,14 +6,29 @@ import {
   QUERY_PERSONS,
   QUERY_PERSONS_NAME_ID,
 } from "../utils/queries";
-import { ADD_PERSON, UPDATE_PERSON } from "../utils/mutations";
+import {
+  ADD_PERSON,
+  UPDATE_PERSON,
+  UPDATE_CHILDREN_AND_PARENTS,
+} from "../utils/mutations";
 import Auth from "../utils/auth";
 import CreatableSelect from "react-select/creatable";
 //TODO: get the props from singlepersoninfo component and add them to the options for parents names
 //with an option for a new person if that selected
 //finish the other inputs, need a boolean slider for isClose
 const AddChild = (props) => {
-  let newParentName = null;
+  const [newParentName, setNewParentName] = useState(null);
+  const [formState, setFormState] = useState({
+    name: "",
+    deathDate: "",
+    birthday: "",
+    parents: [],
+    children: [],
+    isClose: false,
+  });
+
+  const [selectVal, setSelectVal] = useState("");
+
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
   const { loading: currentLoading, data: currentData } = useQuery(
     QUERY_SINGLE_PERSON,
@@ -31,27 +46,34 @@ const AddChild = (props) => {
 
   const handleMultiChange = (e) => {
     console.log(e);
-    if (!options.find((x) => x.value === e[0].value)) {
+    console.log(e.label);
+    setSelectVal(e.label);
+    console.log(selectVal);
+    if (!options.find((x) => x.value === e.value)) {
       console.log("parent not found, creating new");
-      console.log(e[0].value);
+      console.log(e.value);
       //if the selected name is new
-      newParentName = e[0].value;
+      setNewParentName(e.value);
+      console.log(newParentName);
       return;
       //create new person based on the new inputted name, and save them as a parent to the child being added
     }
     setFormState({ ...formState, parents: [e.value, props.personId] });
   };
 
+  // useEffect(() => { // trying to get the selected person to appear in the select box. currently displaying above
+  //   if (selectVal) {
+  //     const option = options.find((option) => option.value === selectVal.value);
+  //     if (option && option.label !== selectVal.label) {
+  //       setSelectVal(option);
+  //     }
+  //   }
+  // }, [formState, options]);
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);
   const [updatePerson, { error: updateError }] = useMutation(UPDATE_PERSON);
-  const [formState, setFormState] = useState({
-    name: "",
-    deathDate: "",
-    birthday: "",
-    parents: [],
-    children: [],
-    isClose: false,
-  });
+  const [updatePersonRels, { error: updateRelsError }] = useMutation(
+    UPDATE_CHILDREN_AND_PARENTS
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -65,9 +87,11 @@ const AddChild = (props) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     console.log(formState);
+    console.log(newParentName);
     try {
       if (newParentName !== null) {
         console.log(newParentName);
+        console.log("entering the new parent name");
         const newBlankParent = await createPerson({
           //creating the new parent
           variables: { name: newParentName, isClose: false },
@@ -91,7 +115,7 @@ const AddChild = (props) => {
           //updating the blank parent with the new childs id
           variables: { _ID: NewParentId, children: [newChildId] },
         });
-        const currentChildren = currentData.person.children;
+        let currentChildren = currentData.person.children;
         if (currentChildren.length === 0) {
           await updatePerson({
             variables: {
@@ -100,15 +124,19 @@ const AddChild = (props) => {
             },
           });
         } else {
-          console.log(currentData);
-          currentChildren.push(newChildId);
+          console.log(currentChildren);
+          console.log(newChildId);
+          let currentChildren2 = [...currentChildren, newChildId];
+          console.log(currentChildren2);
+
           await updatePerson({
             variables: {
               _ID: props.personId, //updating the current logged in person with new child
-              children: [currentChildren],
+              children: currentChildren2,
             },
           });
         }
+        setNewParentName(null);
         setFormState({
           name: "",
           deathDate: "",
@@ -117,16 +145,33 @@ const AddChild = (props) => {
           children: [],
           isClose: false,
         });
-        props.addChildShow(); //close the add child section upon completion
+        props.addChildHide(); //close the add child section upon completion
       } //create new parent and new child complete, below need to do for existing parent
       else {
         const newChild = await createPerson({
           variables: { ...formState },
         });
-        // for(let i = 0; i<newChild.parents.length; i++){
-        // const parentToAdd = await
-
-        // }
+        let newChildActual = newChild.data.addPerson;
+        console.log(newChild);
+        for (let i = 0; i < newChildActual.parents.length; i++) {
+          const parentToAdd = await updatePersonRels({
+            variables: {
+              _ID: newChildActual.parents[i],
+              children: newChildActual._id,
+            },
+          });
+          console.log(parentToAdd);
+        }
+        setNewParentName(null);
+        setFormState({
+          name: "",
+          deathDate: "",
+          birthday: "",
+          parents: [],
+          children: [],
+          isClose: false,
+        });
+        props.addChildHide();
       }
     } catch (e) {
       console.error(e);
@@ -174,12 +219,12 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Other Parent:
+          Other Parent: {selectVal}
           <CreatableSelect
-            isMulti={true}
-            value={formState.parents}
+            isMulti={false}
+            value={selectVal}
             options={options}
-            closeMenuOnSelect={false}
+            closeMenuOnSelect={true}
             onChange={handleMultiChange}
           />
         </label>

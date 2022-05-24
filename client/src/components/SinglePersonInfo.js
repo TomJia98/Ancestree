@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { QUERY_SINGLE_PERSON, QUERY_PERSONS_NAME_ID } from "../utils/queries";
 import { useQuery } from "@apollo/client";
 import Auth from "../utils/auth";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AddChild from "./addChild";
 const SinglePersonInfo = (props) => {

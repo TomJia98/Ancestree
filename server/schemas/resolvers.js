@@ -79,7 +79,11 @@ const resolvers = {
       }
     },
 
-    updateRelations: async (parent, { _ID, children, parents }) => {
+    updateRelations: async (parent, { _ID, children, parents }, context) => {
+      const userId = context.user._id;
+      if (!userId) {
+        return new Error("user is not logged in");
+      }
       try {
         const updatingPerson = await Person.findById({ _id: _ID });
         if (updatingPerson.parents.length < 2 && parents) {
