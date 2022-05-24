@@ -21,10 +21,9 @@ const SinglePersonInfo = (props) => {
     variables: { personId: props.current || personId },
   });
   const addChildShow = () => {
-    setISADDCHILD(true);
-  };
-  const addChildHide = () => {
-    setISADDCHILD(false);
+    if (ISADDCHILD) {
+      setISADDCHILD(false);
+    } else setISADDCHILD(true);
   };
 
   return (
@@ -38,12 +37,12 @@ const SinglePersonInfo = (props) => {
           <p>name :{data.person.name}</p>
           <p>birthday: {data.person.birthday}</p>
           <p>children: {data.person.children.length}</p>
-          <button onClick={addChildShow}>add child</button>
+          <button onClick={addChildShow}>new child</button>
           {ISADDCHILD ? (
             <>
               <AddChild
                 personId={data.person._id}
-                addChildHide={addChildHide}
+                addChildHide={addChildShow}
                 personsIdAndNameArr={NIDData}
               ></AddChild>
             </>

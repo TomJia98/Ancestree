@@ -8,66 +8,37 @@ import {
 } from "../utils/queries";
 import { ADD_PERSON, UPDATE_PERSON } from "../utils/mutations";
 import Auth from "../utils/auth";
-import AsyncCreatableSelect from "react-select/async-creatable";
-import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 //TODO: get the props from singlepersoninfo component and add them to the options for parents names
 //with an option for a new person if that selected
 //finish the other inputs, need a boolean slider for isClose
 const AddChild = (props) => {
-  const handleMultiChange = (e) => {
-    console.log("something shaveofaf");
-    console.log(e);
-  };
-
-  class WithPromises extends Component {
-    render() {
-      const PromiseOptions = async (inputValue) => {
-        const { loading, data } = useQuery(QUERY_PERSONS_NAME_ID);
-        if (!loading) {
-          let returnData;
-          console.log(data);
-          console.log("the data from that new query");
-        }
-        return [
-          { value: "a", label: "a" },
-          { value: "b", label: "b" },
-        ];
-      };
-
-      return (
-        <AsyncCreatableSelect
-          isMulti
-          cacheOptions
-          defaultOptions
-          onChange={handleMultiChange}
-          loadOptions={PromiseOptions}
-        />
-      );
-    }
-  }
-
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
 
   const namesAndIds = props.personsIdAndNameArr.persons;
-  console.log(namesAndIds);
-  let options = [
-    { value: "a", label: "a" },
-    { value: "b", label: "b" },
-  ];
+  let options = [];
   namesAndIds.forEach((el) => {
     //add the ids and names of the current people to the options for the drop down
     const obj = { value: el._id, label: el.name };
     options.push(obj);
   });
-  console.log(options);
+
+  const handleMultiChange = (e) => {
+    console.log(e);
+    setFormState({ ...formState, parents: [e.value, props.personId] });
+    //     if(options.find((x =>x.value === e.value)===undefined)){
+    // //create new person based on the new inputted name, and save them as a parent to the child being added
+
+    //     }
+  };
+
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);
   const [updatePerson, { error: updateError }] = useMutation(UPDATE_PERSON);
   const [formState, setFormState] = useState({
     name: "",
     deathDate: "",
     birthday: "",
-    parents: "",
+    parents: [],
     children: [],
     isClose: false,
   });
@@ -84,16 +55,10 @@ const AddChild = (props) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const newParents = [formState.parents, props.personId]; //adding the currently selected person as a parent
       const response = await createPerson({
         //adding the createdBy arr is done serverside
         variables: {
-          name: formState.name,
-          deathDate: formState.deathDate,
-          birthday: formState.birthday,
-          parents: newParents,
-          children: [],
-          isClose: formState.isClose,
+          ...formState,
         },
       });
       if (!response.data) {
@@ -108,7 +73,7 @@ const AddChild = (props) => {
       name: "",
       deathDate: "",
       birthday: "",
-      parents: "",
+      parents: [],
       children: [],
       isClose: false,
     });
@@ -116,36 +81,66 @@ const AddChild = (props) => {
 
   return (
     <div>
-      <input
-        className="form-input"
-        placeholder="Your name"
-        name="name"
-        type="text"
-        value={formState.name}
-        onChange={handleChange}
-      />
-      <input
-        className="form-input"
-        placeholder=" Your Birthday"
-        name="birthday"
-        type="date"
-        value={formState.birthday}
-        onChange={handleChange}
-      />
-      <input
-        className="form-input"
-        placeholder=" Your Birthday"
-        name="birthday"
-        type="date"
-        value={formState.birthday}
-        onChange={handleChange}
-      />
-      <CreatableSelect
-        isMulti={true}
-        options={options}
-        closeMenuOnSelect={false}
-        onChange={handleMultiChange}
-      />
+      <form onSubmit={handleFormSubmit}>
+        <label>
+          <br></br>
+          Childs Name:
+          <input
+            className="form-input"
+            placeholder="Childs Name"
+            name="name"
+            type="text"
+            value={formState.name}
+            onChange={handleChange}
+          />
+        </label>
+        <br></br>
+        <label>
+          Childs Birthdate:
+          <input
+            className="form-input"
+            placeholder=" birthday"
+            name="birthday"
+            type="date"
+            value={formState.birthday}
+            onChange={handleChange}
+          />
+        </label>
+        <br></br>
+        <label>
+          Childs deathDate:
+          <input
+            className="form-input"
+            placeholder="deathDate"
+            name="deathDate"
+            type="date"
+            value={formState.deathDate}
+            onChange={handleChange}
+          />
+        </label>
+        <br></br>
+        <label>
+          Other Parent:
+          <CreatableSelect
+            isMulti={true}
+            value={formState.parents}
+            options={options}
+            closeMenuOnSelect={false}
+            onChange={handleMultiChange}
+          />
+        </label>
+        <br></br>
+        <label>
+          Email on birthday
+          <input
+            className="react-switch-checkbox"
+            name="isClose"
+            type="checkbox"
+          />
+        </label>
+
+        <input type="submit" value="Add Child" />
+      </form>
     </div>
   );
 };
