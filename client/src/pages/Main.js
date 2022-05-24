@@ -140,7 +140,7 @@ if they do, add an edge to each child, and add it to the graph, whilst checking 
       ) : (
         <>
           <p>
-            It looks like you are not logged in! please log in or signup{" "}
+            It looks like you are not logged in! please log in or signup
             <Link to="/login">here</Link>
           </p>
         </>
