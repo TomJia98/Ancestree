@@ -25,12 +25,14 @@ const SinglePersonInfo = (props) => {
     if (ISADDCHILD) {
       setISADDCHILD(false);
     } else setISADDCHILD(true);
+    setISEDIT(false);
   };
 
   const addEditShow = () => {
     if (ISEDIT) {
       setISEDIT(false);
     } else setISEDIT(true);
+    setISADDCHILD(false);
   };
   return (
     <>
@@ -58,7 +60,7 @@ const SinglePersonInfo = (props) => {
           )}
           {ISEDIT ? (
             <>
-              <EditPerson></EditPerson>
+              <EditPerson personId={data.person._id}></EditPerson>
             </>
           ) : (
             <></>

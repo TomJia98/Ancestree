@@ -41,7 +41,12 @@ const Main = () => {
     const peopleEdgeArr = [];
 
     allPeople.forEach((el) => {
-      let personNode = { id: el._id, label: el.name };
+      let personNode;
+      if (el.isLinked) {
+        personNode = { id: el._id, label: el.name, color: "red" };
+      } else {
+        personNode = { id: el._id, label: el.name };
+      }
       peopleNodeArr.push(personNode);
       let personEdge = [];
       for (let i = 0; i < el.children.length; i++) {
