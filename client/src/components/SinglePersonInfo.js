@@ -4,15 +4,14 @@ import { useQuery } from "@apollo/client";
 import Auth from "../utils/auth";
 import { Link } from "react-router-dom";
 import AddChild from "./addChild";
+import EditPerson from "./editPerson";
 const SinglePersonInfo = (props) => {
   let [ISADDCHILD, setISADDCHILD] = useState(false);
+  let [ISEDIT, setISEDIT] = useState(false);
 
   const { loading: NIDLoading, data: NIDData } = useQuery(
     QUERY_PERSONS_NAME_ID
   );
-  if (!NIDLoading) {
-    console.log(NIDData);
-  }
   // TODO: pass through the people with id and name into the addChild element
   const user = Auth.getProfile();
   const personId = user.data.person;
@@ -25,6 +24,11 @@ const SinglePersonInfo = (props) => {
     } else setISADDCHILD(true);
   };
 
+  const addEditShow = () => {
+    if (ISEDIT) {
+      setISEDIT(false);
+    } else setISEDIT(true);
+  };
   return (
     <>
       {loading ? (
@@ -37,6 +41,7 @@ const SinglePersonInfo = (props) => {
           <p>birthday: {data.person.birthday}</p>
           <p>children: {data.person.children.length}</p>
           <button onClick={addChildShow}>new child</button>
+          <button onClick={addEditShow}>edit current person</button>
           {ISADDCHILD ? (
             <>
               <AddChild
@@ -44,6 +49,13 @@ const SinglePersonInfo = (props) => {
                 addChildHide={addChildShow}
                 personsIdAndNameArr={NIDData}
               ></AddChild>
+            </>
+          ) : (
+            <></>
+          )}
+          {ISEDIT ? (
+            <>
+              <EditPerson></EditPerson>
             </>
           ) : (
             <></>

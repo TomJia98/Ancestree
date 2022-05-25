@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useQuery } from "@apollo/client";
@@ -33,18 +33,20 @@ import SinglePersonInfo from "../components/SinglePersonInfo";
 
 let LEVEL = 0;
 const Main = () => {
+  let graph1;
   const user = Auth.getProfile();
+  const [selectedNode, setSelectedNode] = useState(""); //add the logged in users person here as default
 
   const [isGraphFinished, setIsGraph] = useState(false);
-
   const personId = user.data.person;
 
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
 
-  if (allData) {
-    console.log(allData);
-    console.log("all data is above this one");
-  }
+  // if (allData) {
+  //   console.log(allData);
+  //   console.log("this is the alldata");
+  //   setIsGraph(true);
+  // }
   const { loading, data: userData } = useQuery(QUERY_SINGLE_PERSON, {
     variables: { personId },
   });
@@ -56,27 +58,51 @@ const Main = () => {
     edges: [],
   });
 
-  if (userData && LEVEL === 0) {
-    console.log(LEVEL);
-    LEVEL++;
-    const currentPerson = userData.person;
-    console.log(currentPerson);
-    console.log("here is the user data from the main page");
+  // if (userData && LEVEL === 0) {
+  //   LEVEL++;
+  //   const currentPerson = userData.person;
+  //   console.log("here is the user data from the main page");
 
-    let currentGraph = graph;
+  //   let currentGraph = graph;
 
-    let userNode = {
-      id: currentPerson._id,
-      label: currentPerson.name,
-      level: LEVEL,
-    };
+  //   let userNode = {
+  //     id: currentPerson._id,
+  //     label: currentPerson.name,
+  //     level: LEVEL,
+  //   };
 
-    currentGraph.nodes.push(userNode);
-    console.log(currentGraph);
-    console.log("======================");
-    setGraph(currentGraph);
+  //   currentGraph.nodes.push(userNode);
+  //   console.log(currentGraph);
+  //   console.log("======================");
+  //   setGraph(currentGraph);
+  //   setIsGraph(true);
+  // // }
+  // useEffect(() => {
+  if (allData && !isGraphFinished) {
+    console.log("==============");
+    const allPeople = allData.persons;
+    const peopleNodeArr = [];
+    const peopleEdgeArr = [];
+
+    allPeople.forEach((el) => {
+      let personNode = { id: el._id, label: el.name };
+      peopleNodeArr.push(personNode);
+      let personEdge = [];
+      for (let i = 0; i < el.children.length; i++) {
+        let edge = { from: el._id, to: el.children[i] };
+        personEdge.push(edge);
+      }
+      peopleEdgeArr.push.apply(peopleEdgeArr, personEdge);
+    });
+    console.log(peopleNodeArr);
+    console.log(peopleEdgeArr);
+    console.log("all data is above this one");
+    let newGraph = { nodes: peopleNodeArr, edges: peopleEdgeArr };
+    console.log(newGraph);
+    setGraph(newGraph);
     setIsGraph(true);
   }
+  // }, [isGraphFinished]);
 
   //add logic for adding new people to the graph
 
@@ -84,8 +110,6 @@ const Main = () => {
 then loops through the returned array of people and adds their nodes to the graph
 then searches if they have children
 if they do, add an edge to each child, and add it to the graph, whilst checking if the*/
-
-  const [selectedNode, setSelectedNode] = useState(""); //add the logged in users person here as default
 
   // const user = Auth.getProfile();
   // const {loading, data} = useQuery(
