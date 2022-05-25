@@ -7,30 +7,6 @@ import Graph from "react-graph-vis";
 import Auth from "../utils/auth";
 import SinglePersonInfo from "../components/SinglePersonInfo";
 
-// old data from the graph for reference
-
-// nodes: [
-//   { id: "parent 1", label: "parent 1", title: "node 1 tootip text" , level: 1},
-//   //to add a new line, use \n. size of nodes adapts to the change in text
-//   { id: 2, label: "parent 2", title: "node 2 tootip text", level: 1},
-//   { id: "child 2", label: "child 2", title: "node 4 tootip text", level: 2},
-//   { id: 3, label: "child 1", title: "node 3 tootip text", level: 2},
-//   { id: 5, label: "child 3", title: "node 4 tootip text", level: 2},
-//   { id: 6, label: "parent 3", title: "node 4 tootip text", level: 1},
-//   { id: 7, label: "granchild 1", title: "node 4 tootip text", level: 3},
-//   // { id: 5, label: "Node 5", title: "node 5 tootip text" }
-// ],
-// edges: [
-//   { from: "parent 1", to: 3 },
-//   { from: "parent 1", to: "child 2" },
-//   { from: 2, to: "child 2" },
-//   { from: 2, to: 3 },
-//   { from: 6, to: 5 },
-//   { from: 5, to: 7 },
-//   { from: 3, to: 7 },
-//   // { from: 2, to: 5 }
-// ]
-
 let LEVEL = 0;
 const Main = () => {
   let graph1;
@@ -58,26 +34,6 @@ const Main = () => {
     edges: [],
   });
 
-  // if (userData && LEVEL === 0) {
-  //   LEVEL++;
-  //   const currentPerson = userData.person;
-  //   console.log("here is the user data from the main page");
-
-  //   let currentGraph = graph;
-
-  //   let userNode = {
-  //     id: currentPerson._id,
-  //     label: currentPerson.name,
-  //     level: LEVEL,
-  //   };
-
-  //   currentGraph.nodes.push(userNode);
-  //   console.log(currentGraph);
-  //   console.log("======================");
-  //   setGraph(currentGraph);
-  //   setIsGraph(true);
-  // // }
-  // useEffect(() => {
   if (allData && !isGraphFinished) {
     console.log("==============");
     const allPeople = allData.persons;
@@ -102,7 +58,6 @@ const Main = () => {
     setGraph(newGraph);
     setIsGraph(true);
   }
-  // }, [isGraphFinished]);
 
   //add logic for adding new people to the graph
 
@@ -111,17 +66,9 @@ then loops through the returned array of people and adds their nodes to the grap
 then searches if they have children
 if they do, add an edge to each child, and add it to the graph, whilst checking if the*/
 
-  // const user = Auth.getProfile();
-  // const {loading, data} = useQuery(
-
-  // )
-
-  //ideas for how to graph out the data
-  //need to go to the first parent,(parents==0) then search for children in a loop. for each child layer searched, increase the level by 1
-
   const options = {
     layout: {
-      hierarchical: false,
+      hierarchical: { enabled: true, sortMethod: "directed" },
     },
     edges: {
       color: "#000000",

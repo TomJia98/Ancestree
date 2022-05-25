@@ -18,6 +18,9 @@ const SinglePersonInfo = (props) => {
   const { loading, data } = useQuery(QUERY_SINGLE_PERSON, {
     variables: { personId: props.current || personId },
   });
+  if (data) {
+    console.log(data);
+  }
   const addChildShow = () => {
     if (ISADDCHILD) {
       setISADDCHILD(false);

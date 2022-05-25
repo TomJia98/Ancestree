@@ -82,19 +82,18 @@ const resolvers = {
       }
       try {
         const updatingPerson = await Person.findById({ _id: _ID });
-        if (updatingPerson.parents.length < 2) {
-          try {
-            const updatePerson = await Person.findByIdAndUpdate(
-              { _id: _ID },
-              {
-                $push: { parents: parents, children: children },
-              },
-              { new: true }
-            );
-            return updatePerson;
-          } catch (e) {
-            console.log(e);
-          }
+
+        try {
+          const updatePerson = await Person.findByIdAndUpdate(
+            { _id: _ID },
+            {
+              $push: { parents: parents, children: children },
+            },
+            { new: true }
+          );
+          return updatePerson;
+        } catch (e) {
+          console.log(e);
         }
       } catch (e) {
         console.log(e);

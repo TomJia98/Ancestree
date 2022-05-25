@@ -161,6 +161,7 @@ const AddChild = (props) => {
             },
           });
           console.log(parentToAdd);
+          console.log("here is parents to add result");
         }
         setNewParentName(null);
         setFormState({
