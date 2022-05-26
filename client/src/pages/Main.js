@@ -58,7 +58,12 @@ const Main = () => {
 
   const options = {
     layout: {
-      hierarchical: { enabled: true, sortMethod: "directed" },
+      hierarchical: {
+        direction: "UD",
+        enabled: true,
+        sortMethod: "directed",
+        shakeTowards: "leaves",
+      },
     },
     edges: {
       color: "#000000",
@@ -86,7 +91,6 @@ const Main = () => {
                 graph={graph}
                 options={options}
                 events={events}
-                getNetwork={(network) => {}}
               />
             </>
           ) : (

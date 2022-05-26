@@ -57,7 +57,7 @@ const CreateParents = (props) => {
               <input
                 className="form-input"
                 placeholder="parent 1 Name"
-                name="p1name"
+                name="name1"
                 type="text"
                 value={formState.name1}
                 onChange={handleChange}
@@ -70,7 +70,7 @@ const CreateParents = (props) => {
               <input
                 className="form-input"
                 placeholder="parent 2 Name"
-                name="p2name"
+                name="name2"
                 type="text"
                 value={formState.name2}
                 onChange={handleChange}
