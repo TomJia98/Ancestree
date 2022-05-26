@@ -13,9 +13,7 @@ import {
 } from "../utils/mutations";
 import Auth from "../utils/auth";
 import CreatableSelect from "react-select/creatable";
-//TODO: get the props from singlepersoninfo component and add them to the options for parents names
-//with an option for a new person if that selected
-//finish the other inputs, need a boolean slider for isClose
+
 const AddChild = (props) => {
   const [newParentName, setNewParentName] = useState(null);
   const [formState, setFormState] = useState({
@@ -61,14 +59,6 @@ const AddChild = (props) => {
     setFormState({ ...formState, parents: [e.value, props.personId] });
   };
 
-  // useEffect(() => { // trying to get the selected person to appear in the select box. currently displaying above
-  //   if (selectVal) {
-  //     const option = options.find((option) => option.value === selectVal.value);
-  //     if (option && option.label !== selectVal.label) {
-  //       setSelectVal(option);
-  //     }
-  //   }
-  // }, [formState, options]);
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);
   const [updatePerson, { error: updateError }] = useMutation(UPDATE_PERSON);
   const [updatePersonRels, { error: updateRelsError }] = useMutation(
@@ -246,3 +236,6 @@ const AddChild = (props) => {
 };
 
 export default AddChild;
+
+//todo
+//change alot of this to be done on the backend with specific routes

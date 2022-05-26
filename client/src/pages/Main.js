@@ -18,11 +18,6 @@ const Main = () => {
 
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
 
-  // if (allData) {
-  //   console.log(allData);
-  //   console.log("this is the alldata");
-  //   setIsGraph(true);
-  // }
   const { loading, data: userData } = useQuery(QUERY_SINGLE_PERSON, {
     variables: { personId },
   });
@@ -55,21 +50,11 @@ const Main = () => {
       }
       peopleEdgeArr.push.apply(peopleEdgeArr, personEdge);
     });
-    console.log(peopleNodeArr);
-    console.log(peopleEdgeArr);
-    console.log("all data is above this one");
+
     let newGraph = { nodes: peopleNodeArr, edges: peopleEdgeArr };
-    console.log(newGraph);
     setGraph(newGraph);
     setIsGraph(true);
   }
-
-  //add logic for adding new people to the graph
-
-  /* need to add a search function to return all people that dont have parents (starts of the familylines)
-then loops through the returned array of people and adds their nodes to the graph
-then searches if they have children
-if they do, add an edge to each child, and add it to the graph, whilst checking if the*/
 
   const options = {
     layout: {
@@ -82,10 +67,9 @@ if they do, add an edge to each child, and add it to the graph, whilst checking 
   };
 
   const events = {
+    //add selection criteria to not switch if clicking away from a node
     select: function (event) {
       var { nodes, edges } = event;
-      console.log(nodes[0]);
-      console.log(edges);
       setSelectedNode(nodes[0]);
     },
   };
@@ -102,9 +86,7 @@ if they do, add an edge to each child, and add it to the graph, whilst checking 
                 graph={graph}
                 options={options}
                 events={events}
-                getNetwork={(network) => {
-                  //  if you want access to vis.js network api you can set the state in a parent component using this property
-                }}
+                getNetwork={(network) => {}}
               />
             </>
           ) : (

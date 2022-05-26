@@ -45,7 +45,7 @@ const typeDefs = gql`
       isClose: Boolean
     ): Person
 
-    updateRelations(_ID: ID!, children: String, parents: String): Person
+    updateRelations(_ID: ID!, children: String, parents: [String]): Person
 
     updatePerson(
       _ID: ID!

@@ -5,22 +5,21 @@ import Auth from "../utils/auth";
 import { Link } from "react-router-dom";
 import AddChild from "./addChild";
 import EditPerson from "./editPerson";
+import CreateParents from "./createParents";
+
 const SinglePersonInfo = (props) => {
   let [ISADDCHILD, setISADDCHILD] = useState(false);
   let [ISEDIT, setISEDIT] = useState(false);
-
+  let [hasParents, sethasParents] = useState();
   const { loading: NIDLoading, data: NIDData } = useQuery(
     QUERY_PERSONS_NAME_ID
   );
-  // TODO: pass through the people with id and name into the addChild element
   const user = Auth.getProfile();
   const personId = user.data.person;
   const { loading, data } = useQuery(QUERY_SINGLE_PERSON, {
     variables: { personId: props.current || personId },
   });
-  if (data) {
-    console.log(data);
-  }
+
   const addChildShow = () => {
     if (ISADDCHILD) {
       setISADDCHILD(false);
@@ -45,6 +44,13 @@ const SinglePersonInfo = (props) => {
           <p>name :{data.person.name}</p>
           <p>birthday: {data.person.birthday}</p>
           <p>children: {data.person.children.length}</p>
+          {data.person.parents.length ? (
+            <></>
+          ) : (
+            <>
+              <CreateParents personId={data.person._id} />
+            </>
+          )}
           <button onClick={addChildShow}>new child</button>
           <button onClick={addEditShow}>edit current person</button>
           {ISADDCHILD ? (

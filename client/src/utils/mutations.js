@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const UPDATE_CHILDREN_AND_PARENTS = gql`
-  mutation updateRelations($_ID: ID!, $children: String, $parents: String) {
+  mutation updateRelations($_ID: ID!, $children: String, $parents: [String]) {
     updateRelations(_ID: $_ID, children: $children, parents: $parents) {
       _id
       name
