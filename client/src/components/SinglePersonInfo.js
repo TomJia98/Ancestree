@@ -16,9 +16,14 @@ const SinglePersonInfo = (props) => {
   );
   const user = Auth.getProfile();
   const personId = user.data.person;
+
   const { loading, data } = useQuery(QUERY_SINGLE_PERSON, {
     variables: { personId: props.current || personId },
   });
+
+  const createLink = () => {
+    console.log();
+  };
 
   const addChildShow = () => {
     if (ISADDCHILD) {
@@ -35,6 +40,13 @@ const SinglePersonInfo = (props) => {
   };
   return (
     <>
+      {props.current ? (
+        <>
+          <button onClick={createLink}>Create linking code</button>
+        </>
+      ) : (
+        <></>
+      )}
       {loading ? (
         <>
           <p>loading...</p>
@@ -48,7 +60,10 @@ const SinglePersonInfo = (props) => {
             <></>
           ) : (
             <>
-              <CreateParents personId={data.person._id} />
+              <CreateParents
+                personId={data.person._id}
+                createdBy={data.person.createdBy}
+              />
             </>
           )}
           <button onClick={addChildShow}>new child</button>
@@ -59,6 +74,7 @@ const SinglePersonInfo = (props) => {
                 personId={data.person._id}
                 addChildHide={addChildShow}
                 personsIdAndNameArr={NIDData}
+                createdBy={data.person.createdBy}
               ></AddChild>
             </>
           ) : (
