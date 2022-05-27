@@ -20,6 +20,7 @@ const SinglePersonInfo = (props) => {
     QUERY_PERSONS_NAME_ID
   );
   const user = Auth.getProfile();
+  console.log(user);
   const personId = user.data.person;
 
   const { loading, data } = useQuery(QUERY_SINGLE_PERSON, {
@@ -32,7 +33,7 @@ const SinglePersonInfo = (props) => {
     const newLinkCode = await createNewLink({
       variables: {
         linkingCode: newCode,
-        userWhoIsLinking: personId,
+        userWhoIsLinking: user.data._id,
         linkedToPerson: props.current,
       },
     });

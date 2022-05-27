@@ -66,7 +66,6 @@ const resolvers = {
     acceptLink: async (parent, { linkingCode }) => {
       try {
         const findLink = await LinkingCode.findOne({ linkingCode });
-        console.log(findLink);
         if (!findLink) {
           return new Error("no linking code found");
         } else await LinkingCode.findByIdAndDelete({ _id: findLink._id });
@@ -95,6 +94,8 @@ const resolvers = {
         const updatingUsersPeopleArr = await Person.find({
           createdBy: userWhoIsLinking,
         });
+        console.log(updatingUsersPeopleArr);
+        console.log(userWhoIsLinking);
         for (let i = 0; i < updatingUsersPeopleArr.length; i++) {
           await Person.findByIdAndUpdate(
             { _id: updatingUsersPeopleArr[i]._id },
