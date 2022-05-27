@@ -12,6 +12,7 @@ const CreateParents = (props) => {
     name1: "",
     name2: "",
     children: [props.personId],
+    createdBy: [props.createdBy],
   });
 
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);
@@ -33,10 +34,18 @@ const CreateParents = (props) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const parent1 = await createPerson({
-      variables: { name: formState.name1, children: formState.children },
+      variables: {
+        name: formState.name1,
+        children: formState.children,
+        createdBy: formState.createdBy,
+      },
     });
     const parent2 = await createPerson({
-      variables: { name: formState.name2, children: formState.children },
+      variables: {
+        name: formState.name2,
+        children: formState.children,
+        createdBy: formState.createdBy,
+      },
     });
     const parentsArr = [parent1.data.addPerson._id, parent2.data.addPerson._id];
 

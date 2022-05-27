@@ -40,6 +40,7 @@ export const ADD_PERSON = gql`
     $birthday: String
     $parents: [String]
     $children: [String]
+    $createdBy: [String]
     $isClose: Boolean
   ) {
     addPerson(
@@ -48,6 +49,7 @@ export const ADD_PERSON = gql`
       birthday: $birthday
       parents: $parents
       children: $children
+      createdBy: $createdBy
       isClose: $isClose
     ) {
       _id
@@ -95,6 +97,49 @@ export const UPDATE_PERSON = gql`
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      token
+    }
+  }
+`;
+
+export const CREATE_LINK = gql`
+  mutation createLink(
+    $linkingCode: String!
+    $userWhoIsLinking: String!
+    $linkedToPerson: String!
+  ) {
+    createLink(
+      linkingCode: $linkingCode
+      userWhoIsLinking: $userWhoIsLinking
+      linkedToPerson: $linkedToPerson
+    ) {
+      linkingCode
+    }
+  }
+`;
+
+export const ACCEPT_LINK = gql`
+  mutation acceptLink($linkingCode: String!) {
+    acceptLink(linkingCode: $linkingCode) {
+      userWhoIsLinking
+      linkedToPerson
+    }
+  }
+`;
+
+export const CREATE_LINKED_USER = gql`
+  mutation createLinkedUser(
+    $userWhoIsLinking: String!
+    $linkedToPerson: String!
+    $email: String!
+    $password: String!
+  ) {
+    createLinkedUser(
+      userWhoIsLinking: $userWhoIsLinking
+      linkedToPerson: $linkedToPerson
+      email: $email
+      password: $password
+    ) {
       token
     }
   }

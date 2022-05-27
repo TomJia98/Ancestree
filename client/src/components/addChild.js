@@ -23,6 +23,7 @@ const AddChild = (props) => {
     parents: [],
     children: [],
     isClose: false,
+    createdBy: props.createdBy,
   });
 
   const [selectVal, setSelectVal] = useState("");
@@ -84,7 +85,11 @@ const AddChild = (props) => {
         console.log("entering the new parent name");
         const newBlankParent = await createPerson({
           //creating the new parent
-          variables: { name: newParentName, isClose: false },
+          variables: {
+            name: newParentName,
+            isClose: false,
+            createdBy: formState.createdBy,
+          },
         });
         const NewParentId = newBlankParent.data.addPerson._id;
         console.log(newBlankParent);
@@ -96,6 +101,7 @@ const AddChild = (props) => {
             birthday: formState.birthday,
             birthday: formState.birthday,
             parents: [NewParentId, props.personId],
+            createdBy: formState.createdBy,
             children: [],
             isclose: formState.isClose,
           },
@@ -133,6 +139,7 @@ const AddChild = (props) => {
           birthday: "",
           parents: [],
           children: [],
+          createdBy: props.createdBy,
           isClose: false,
         });
         props.addChildHide(); //close the add child section upon completion
@@ -160,6 +167,7 @@ const AddChild = (props) => {
           birthday: "",
           parents: [],
           children: [],
+          createdBy: props.createdBy,
           isClose: false,
         });
         props.addChildHide();

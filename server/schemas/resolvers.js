@@ -1,5 +1,5 @@
 const { AuthenticationError } = require("apollo-server-express");
-const { User, Person } = require("../models");
+const { User, Person, LinkingCode } = require("../models");
 const { signToken } = require("../utils/auth");
 const { GraphQLDateTime } = require("graphql-iso-date");
 
@@ -42,9 +42,76 @@ const resolvers = {
     },
   },
   Mutation: {
+    createLink: async (
+      parent,
+      { linkingCode, userWhoIsLinking, linkedToPerson },
+      context
+    ) => {
+      const userId = context.user._id;
+      if (!userId) {
+        return new Error("user is not logged in");
+      }
+      try {
+        const newCode = await LinkingCode.create({
+          linkingCode,
+          userWhoIsLinking,
+          linkedToPerson,
+        });
+        return newCode;
+      } catch (e) {
+        return new Error(e);
+      }
+    },
+
+    acceptLink: async (parent, { linkingCode }) => {
+      try {
+        const findLink = await LinkingCode.findOne({ linkingCode });
+        console.log(findLink);
+        if (!findLink) {
+          return new Error("no linking code found");
+        } else await LinkingCode.findByIdAndDelete({ _id: findLink._id });
+        return findLink;
+      } catch (e) {
+        return new Error(e);
+      }
+    },
+    createLinkedUser: async (
+      parent,
+      { userWhoIsLinking, linkedToPerson, email, password }
+    ) => {
+      //values are saved as ID strings
+      try {
+        const findLinkedPerson = await Person.findByIdAndUpdate(
+          { _id: linkedToPerson },
+          { isLinked: true }
+        );
+
+        const newUser = await User.create({
+          name: findLinkedPerson.name,
+          password: password,
+          email: email,
+          person: linkedToPerson,
+        });
+        const updatingUsersPeopleArr = await Person.find({
+          createdBy: userWhoIsLinking,
+        });
+        for (let i = 0; i < updatingUsersPeopleArr.length; i++) {
+          await Person.findByIdAndUpdate(
+            { _id: updatingUsersPeopleArr[i]._id },
+            { $push: { createdBy: newUser._id } }
+          );
+        }
+        const token = signToken(newUser);
+
+        return { token, newUser };
+      } catch (e) {
+        return new Error("failed to link up and create new user");
+      }
+    },
+
     addPerson: async (
       parent,
-      { name, deathDate, birthday, parents, children, isClose },
+      { name, deathDate, birthday, parents, children, isClose, createdBy },
       context
     ) => {
       const user = context.user;
@@ -65,7 +132,7 @@ const resolvers = {
           children,
           isClose,
           isLinked: false,
-          createdBy: user._id,
+          createdBy,
         });
 
         return newPerson;
