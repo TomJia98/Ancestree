@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from "@apollo/client";
-import React, { useState, Component, useEffect } from "react";
+import { useMutation } from "@apollo/client";
+import React, { useState } from "react";
 import Auth from "../utils/auth";
 import { ACCEPT_LINK, CREATE_LINKED_USER } from "../utils/mutations";
 const Linking = () => {

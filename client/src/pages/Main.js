@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useQuery } from "@apollo/client";
@@ -7,9 +7,7 @@ import Graph from "react-graph-vis";
 import Auth from "../utils/auth";
 import SinglePersonInfo from "../components/SinglePersonInfo";
 
-let LEVEL = 0;
 const Main = () => {
-  let graph1;
   const user = Auth.getProfile();
   const [selectedNode, setSelectedNode] = useState(""); //add the logged in users person here as default
 

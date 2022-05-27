@@ -28,6 +28,8 @@ const AddChild = (props) => {
 
   const [selectVal, setSelectVal] = useState("");
 
+  const [error, setError] = useState("");
+
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
   const { loading: currentLoading, data: currentData } = useQuery(
     QUERY_SINGLE_PERSON,
@@ -77,8 +79,12 @@ const AddChild = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
-    console.log(newParentName);
+
+    if (formState.parents.length === 0 && !newParentName) {
+      setError("Child must have a parent");
+      return;
+    }
+
     try {
       if (newParentName !== null) {
         console.log(newParentName);
@@ -160,6 +166,7 @@ const AddChild = (props) => {
           console.log(parentToAdd);
           console.log("here is parents to add result");
         }
+        setError("");
         setNewParentName(null);
         setFormState({
           name: "",
@@ -182,7 +189,7 @@ const AddChild = (props) => {
       <form onSubmit={handleFormSubmit}>
         <label>
           <br></br>
-          Childs Name:
+          Childs Name
           <input
             className="form-input"
             placeholder="Childs Name"
@@ -194,7 +201,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Childs Birthdate:
+          Birthdate
           <input
             className="form-input"
             placeholder=" birthday"
@@ -206,7 +213,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Childs deathDate:
+          Passed away
           <input
             className="form-input"
             placeholder="deathDate"
@@ -229,7 +236,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Email on birthday
+          Email on birthday ?
           <input
             className="react-switch-checkbox"
             name="isClose"
@@ -238,6 +245,7 @@ const AddChild = (props) => {
         </label>
 
         <input type="submit" value="Add Child" />
+        {error}
       </form>
     </div>
   );

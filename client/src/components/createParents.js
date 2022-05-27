@@ -12,7 +12,7 @@ const CreateParents = (props) => {
     name1: "",
     name2: "",
     children: [props.personId],
-    createdBy: [props.createdBy],
+    createdBy: props.createdBy,
   });
 
   const [createPerson, { error: addError }] = useMutation(ADD_PERSON);

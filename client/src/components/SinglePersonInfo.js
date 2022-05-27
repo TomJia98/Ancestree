@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { QUERY_SINGLE_PERSON, QUERY_PERSONS_NAME_ID } from "../utils/queries";
-
+import convertUnixTime from "../utils/convertUnix";
 import { CREATE_LINK } from "../utils/mutations";
 import { useQuery, useMutation } from "@apollo/client";
 import Auth from "../utils/auth";
-import { Link } from "react-router-dom";
 import AddChild from "./addChild";
 import EditPerson from "./editPerson";
 import CreateParents from "./createParents";
@@ -74,7 +73,7 @@ const SinglePersonInfo = (props) => {
       ) : (
         <>
           <p>name :{data.person.name}</p>
-          <p>birthday: {data.person.birthday}</p>
+          <p>birthdate: {convertUnixTime(data.person.birthday)}</p>
           <p>children: {data.person.children.length}</p>
           {data.person.parents.length ? (
             <></>
