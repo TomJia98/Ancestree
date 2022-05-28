@@ -28,7 +28,6 @@ const Main = () => {
   });
 
   if (allData && !isGraphFinished) {
-    console.log("==============");
     const allPeople = allData.persons;
     const peopleNodeArr = [];
     const peopleEdgeArr = [];
@@ -85,14 +84,13 @@ const Main = () => {
         <>
           <SinglePersonInfo current={selectedNode} />
           {isGraphFinished ? (
-            <>
-              <Graph
-                key={graphKey}
-                graph={graph}
-                options={options}
-                events={events}
-              />
-            </>
+            <Graph
+              id="graph"
+              key={graphKey}
+              graph={graph}
+              options={options}
+              events={events}
+            />
           ) : (
             <>
               <p>family tree is being rendered</p>
