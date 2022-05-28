@@ -37,7 +37,8 @@ const SinglePersonInfo = (props) => {
       },
     });
     if (newLinkCode) {
-      setCurrentLinkCode(newCode);
+      setCurrentLinkCode(` your code is 
+       ${newCode}`);
     } else setCurrentLinkCode("Something went wrong, try again");
 
     //use the linking code mutation to actually create the code, then return it to the user
@@ -49,7 +50,10 @@ const SinglePersonInfo = (props) => {
     } else setISADDCHILD(true);
     setISEDIT(false);
   };
-
+  const setAllFalse = () => {
+    setISEDIT(false);
+    setISADDCHILD(false);
+  };
   const addEditShow = () => {
     if (ISEDIT) {
       setISEDIT(false);
@@ -57,36 +61,53 @@ const SinglePersonInfo = (props) => {
     setISADDCHILD(false);
   };
   return (
-    <>
-      {props.current ? (
-        <>
-          <button onClick={createLink}>Create linking code</button>
-          <p>{currentLinkCode}</p>
-        </>
-      ) : (
-        <></>
-      )}
+    <span id="singlePersonInfo">
       {loading ? (
         <>
           <p>loading...</p>
         </>
       ) : (
         <>
-          <p>name :{data.person.name}</p>
-          <p>birthdate: {convertUnixTime(data.person.birthday)}</p>
-          <p>children: {data.person.children.length}</p>
+          <p>Name: {data.person.name}</p>
+          <p>Birthdate: {convertUnixTime(data.person.birthday)}</p>
+          <p>Children: {data.person.children.length}</p>
+          {data.person.deathDate ? (
+            <p>Passed away on {convertUnixTime(data.person.deathDate)}</p>
+          ) : (
+            <></>
+          )}
           {data.person.parents.length ? (
             <></>
           ) : (
             <>
+              {" "}
+              <button onClick={setAllFalse}>Add Parents</button>
               <CreateParents
+                isActive={ISADDCHILD || ISEDIT}
                 personId={data.person._id}
                 createdBy={data.person.createdBy}
               />
             </>
           )}
-          <button onClick={addChildShow}>new child</button>
-          <button onClick={addEditShow}>edit current person</button>
+          {props.current ? (
+            <>
+              <button className="editButtons" onClick={createLink}>
+                Create linking code
+              </button>
+              <p className="editButtons">{currentLinkCode}</p>
+            </>
+          ) : (
+            <></>
+          )}
+          <button className="editButtons" onClick={addChildShow}>
+            new child
+          </button>
+          <br></br>
+          <br></br>
+
+          <button className="editButtons" onClick={addEditShow}>
+            edit current person
+          </button>
           {ISADDCHILD ? (
             <>
               <AddChild
@@ -108,7 +129,13 @@ const SinglePersonInfo = (props) => {
           )}
         </>
       )}
-    </>
+      <br></br>
+      <br></br>
+
+      <br></br>
+
+      <br></br>
+    </span>
   );
 };
 export default SinglePersonInfo;

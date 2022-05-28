@@ -26,23 +26,22 @@ const EditPerson = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(event);
-    console.log(formState);
     try {
       const updatingPerson = await updatePerson({
         variables: { ...formState, _ID: props.personId },
       });
+      window.location.reload();
     } catch (e) {
       console.error(e);
     }
   };
 
   return (
-    <>
+    <span id="editPerson">
       <form onSubmit={handleFormSubmit}>
         <label>
           <br></br>
-          Persons Name:
+          Name:
           <input
             className="form-input"
             placeholder="Childs Name"
@@ -54,7 +53,7 @@ const EditPerson = (props) => {
         </label>
         <br></br>
         <label>
-          Persons Birthdate:
+          Birthdate:
           <input
             className="form-input"
             placeholder=" birthday"
@@ -66,7 +65,7 @@ const EditPerson = (props) => {
         </label>
         <br></br>
         <label>
-          Persons deathDate:
+          DeathDate:
           <input
             className="form-input"
             placeholder="deathDate"
@@ -88,9 +87,9 @@ const EditPerson = (props) => {
           />
         </label>
         <br></br>
-        <input type="submit" value="update person" />
+        <button type="submit">Update Person</button>
       </form>
-    </>
+    </span>
   );
 };
 

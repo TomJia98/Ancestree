@@ -1,6 +1,6 @@
 import React from "react";
 import Auth from "../../utils/auth";
-
+import { Link } from "react-router-dom";
 function Header() {
   const isLogged = Auth.loggedIn();
 
@@ -10,14 +10,18 @@ function Header() {
   };
   return (
     <header>
-      <h1>AncesTree</h1>
+      <h1 id="title">AncesTree</h1>
       {isLogged ? (
         <>
-          <button onClick={logout}>Log Out</button>
+          <button className="log" onClick={logout}>
+            Log Out
+          </button>
         </>
       ) : (
         <>
-          <p>the other option</p>
+          <Link className="log" to="/login">
+            Login
+          </Link>
         </>
       )}
     </header>

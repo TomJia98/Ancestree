@@ -178,6 +178,7 @@ const AddChild = (props) => {
           isClose: false,
         });
         props.addChildHide();
+        window.location.reload();
       }
     } catch (e) {
       console.error(e);
@@ -185,11 +186,22 @@ const AddChild = (props) => {
   };
 
   return (
-    <div>
+    <span id="addChild">
       <form onSubmit={handleFormSubmit}>
         <label>
+          Other Parent: {selectVal}
+          <CreatableSelect
+            isMulti={false}
+            value={selectVal}
+            options={options}
+            closeMenuOnSelect={true}
+            onChange={handleMultiChange}
+          />
+        </label>
+
+        <label>
           <br></br>
-          Childs Name
+          Childs Name:
           <input
             className="form-input"
             placeholder="Childs Name"
@@ -201,7 +213,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Birthdate
+          Birthdate:
           <input
             className="form-input"
             placeholder=" birthday"
@@ -213,7 +225,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Passed away
+          Passed away:
           <input
             className="form-input"
             placeholder="deathDate"
@@ -224,17 +236,7 @@ const AddChild = (props) => {
           />
         </label>
         <br></br>
-        <label>
-          Other Parent: {selectVal}
-          <CreatableSelect
-            isMulti={false}
-            value={selectVal}
-            options={options}
-            closeMenuOnSelect={true}
-            onChange={handleMultiChange}
-          />
-        </label>
-        <br></br>
+
         <label>
           Email on birthday ?
           <input
@@ -243,11 +245,10 @@ const AddChild = (props) => {
             type="checkbox"
           />
         </label>
-
-        <input type="submit" value="Add Child" />
-        {error}
+        <br></br>
+        <button type="submit">Add Child</button>
       </form>
-    </div>
+    </span>
   );
 };
 

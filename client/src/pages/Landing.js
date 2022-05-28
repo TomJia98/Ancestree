@@ -4,24 +4,36 @@ import { useQuery } from "@apollo/client";
 import Auth from "../utils/auth";
 
 const Landing = () => {
-  if (Auth.loggedIn()) console.log(Auth.getProfile());
   return (
-    <main>
+    <main id="landing">
+      <h2>Welcome to AncesTree</h2>
+      <p>The collaboratively expandable ancestory viewer</p>
       {Auth.loggedIn() ? (
         <>
-          <Link to="/main">IsLogged</Link>
+          <Link to="/main" className="link">
+            View your Tree
+          </Link>
         </>
       ) : (
         <>
-          <p>IsntLogged</p>
+          <p>
+            New here?
+            <br></br>
+            <Link to="/signup" className="link">
+              signup
+            </Link>
+          </p>
+          <h3>
+            have a linking code?
+            <br></br>
+            <br></br>
+            <Link to="/linking" className="link">
+              click here
+            </Link>
+          </h3>
         </>
       )}
-      <h2>Welcome to AncesTree</h2>
-      <Link to="/login">Login</Link>
-      <Link to="/signup">signup</Link>
-      <h3>
-        have a linking code? <Link to="/linking">click here</Link>
-      </h3>
+      <br></br>
     </main>
   );
 };

@@ -72,6 +72,10 @@ const Main = () => {
     //add selection criteria to not switch if clicking away from a node
     select: function (event) {
       var { nodes, edges } = event;
+      console.log(nodes[0]);
+      if (nodes[0] === undefined) {
+        return;
+      }
       if (nodes[0] === personId) {
         setSelectedNode();
       } else setSelectedNode(nodes[0]);
@@ -82,6 +86,7 @@ const Main = () => {
     <main>
       {Auth.loggedIn() ? (
         <>
+          <div id="mainSpace"> </div>
           <SinglePersonInfo current={selectedNode} />
           {isGraphFinished ? (
             <Graph

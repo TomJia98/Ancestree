@@ -1,5 +1,7 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
 import Auth from "../utils/auth";
 import { ACCEPT_LINK, CREATE_LINKED_USER } from "../utils/mutations";
 const Linking = () => {
@@ -72,13 +74,17 @@ const Linking = () => {
 
   return (
     <>
+      <Link className="goBack" to={"/"}>
+        Go Back
+      </Link>
+
       {isCodeValid ? (
         <>
           <h2>Code validated! Create your account</h2>
           <form onSubmit={handleFormSubmit}>
             <label>
-              <br></br>
               Email
+              <br></br>
               <input
                 className="form-input"
                 placeholder="Email"
@@ -88,9 +94,10 @@ const Linking = () => {
                 onChange={handleFormChange}
               />
             </label>
+            <br></br>
             <label>
-              <br></br>
               Password
+              <br></br>
               <input
                 className="form-input"
                 placeholder="Password"
@@ -100,15 +107,16 @@ const Linking = () => {
                 onChange={handleFormChange}
               />
             </label>
-            <input type="submit" value="Create Your Account" />
+            <br></br>
+            <button type="submit">Create Your Account</button>
           </form>
         </>
       ) : (
         <>
           <form onSubmit={submitCode}>
             <label>
-              <br></br>
               Enter your linking code
+              <br></br>
               <input
                 className="form-input"
                 placeholder="Linking Code"
@@ -119,7 +127,7 @@ const Linking = () => {
               />
             </label>
             <br></br>
-            <input type="submit" value="Submit" />
+            <button type="submit"> Submit</button>
           </form>
         </>
       )}

@@ -29,6 +29,7 @@ const Login = (props) => {
       });
 
       Auth.login(data.login.token);
+      window.location.href = "/main";
     } catch (e) {
       console.error(e);
     }
@@ -44,30 +45,44 @@ const Login = (props) => {
       {isLogged ? (
         <>
           <p>
-            It looks like your already logged in, view your tree{" "}
+            It looks like your already logged in, view your tree
             <Link to={"/main"}>here</Link>
           </p>
         </>
       ) : (
         <>
+          <Link className="goBack" to={"/"}>
+            Go Back
+          </Link>
           <h2>Login</h2>
           <form onSubmit={handleFormSubmit}>
-            <input
-              className="form-input"
-              placeholder="Your email"
-              name="email"
-              type="email"
-              value={formState.email}
-              onChange={handleChange}
-            />
-            <input
-              className="form-input"
-              placeholder="******"
-              name="password"
-              type="password"
-              value={formState.password}
-              onChange={handleChange}
-            />
+            <label>
+              Email
+              <br></br>
+              <input
+                className="form-input"
+                placeholder="Email"
+                name="email"
+                type="email"
+                value={formState.email}
+                onChange={handleChange}
+              />
+            </label>
+            <br></br>
+            <br></br>
+            <label>
+              password
+              <br></br>
+              <input
+                className="form-input"
+                placeholder="******"
+                name="password"
+                type="password"
+                value={formState.password}
+                onChange={handleChange}
+              />
+            </label>
+            <br></br>
             <button style={{ cursor: "pointer" }} type="submit">
               Submit
             </button>

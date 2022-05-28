@@ -147,8 +147,6 @@ export const CREATE_LINKED_USER = gql`
 
 export const DELETE_PERSON = gql`
   mutation deletePerson($_ID: ID!) {
-    deletePerson(_ID: $_ID) {
-      String
-    }
+    deletePerson(_ID: $_ID)
   }
 `;
