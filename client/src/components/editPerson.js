@@ -1,4 +1,4 @@
-import React, { useState, Component, useEffect } from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   ADD_PERSON,
@@ -9,10 +9,10 @@ import {
 const EditPerson = (props) => {
   const [updatePerson, { error }] = useMutation(UPDATE_PERSON);
   const [formState, setFormState] = useState({
-    name: "",
-    deathDate: "",
-    birthday: "",
-    isClose: false,
+    name: props.name,
+    deathDate: props.deathDate,
+    birthday: props.birthday,
+    isClose: props.isClose,
   });
 
   const handleChange = (event) => {

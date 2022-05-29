@@ -7,13 +7,15 @@ import Auth from "../utils/auth";
 
 const Login = (props) => {
   let isLogged = Auth.loggedIn();
-
+  let [errorLogin, setErrorLogin] = useState("");
   const [formState, setFormState] = useState({ email: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
+  function clearError() {
+    setErrorLogin("");
+  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
     setFormState({
       ...formState,
       [name]: value,
@@ -30,10 +32,14 @@ const Login = (props) => {
 
       Auth.login(data.login.token);
       window.location.href = "/main";
+      setErrorLogin();
     } catch (e) {
+      setErrorLogin("invalid login credentials");
+      setTimeout(() => {
+        setErrorLogin("");
+      }, 1000);
       console.error(e);
     }
-
     setFormState({
       email: "",
       password: "",
@@ -71,7 +77,7 @@ const Login = (props) => {
             <br></br>
             <br></br>
             <label>
-              password
+              Password
               <br></br>
               <input
                 className="form-input"
@@ -87,6 +93,7 @@ const Login = (props) => {
               Submit
             </button>
           </form>
+          <p>{errorLogin}</p>
         </>
       )}
     </main>

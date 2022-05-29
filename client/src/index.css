@@ -19,6 +19,13 @@ body {
     -o-animation-timing-function: linear;
     animation-timing-function: linear;
   }
+
+  footer{
+position:relative;
+top: 300px;
+  }
+
+
   button {
 background-color: white;
     padding: 5px;

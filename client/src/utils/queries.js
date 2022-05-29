@@ -31,6 +31,7 @@ export const QUERY_SINGLE_PERSON = gql`
       _id
       name
       birthday
+      deathDate
       createdBy
       parents
       children

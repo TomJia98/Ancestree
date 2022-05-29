@@ -69,7 +69,7 @@ const SinglePersonInfo = (props) => {
       ) : (
         <>
           <p>Name: {data.person.name}</p>
-          <p>Birthdate: {convertUnixTime(data.person.birthday)}</p>
+          <p>Born on: {convertUnixTime(data.person.birthday)}</p>
           <p>Children: {data.person.children.length}</p>
           {data.person.deathDate ? (
             <p>Passed away on {convertUnixTime(data.person.deathDate)}</p>
@@ -122,7 +122,13 @@ const SinglePersonInfo = (props) => {
           )}
           {ISEDIT ? (
             <>
-              <EditPerson personId={data.person._id}></EditPerson>
+              <EditPerson
+                personId={data.person._id}
+                name={data.person.name}
+                deathDate={data.person.deathDate}
+                birthday={data.person.birthday}
+                isClose={data.person.isClose}
+              ></EditPerson>
             </>
           ) : (
             <></>
