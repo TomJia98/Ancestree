@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useQuery } from "@apollo/client";
@@ -7,9 +7,7 @@ import Graph from "react-graph-vis";
 import Auth from "../utils/auth";
 import SinglePersonInfo from "../components/SinglePersonInfo";
 
-let LEVEL = 0;
 const Main = () => {
-  let graph1;
   const user = Auth.getProfile();
   const [selectedNode, setSelectedNode] = useState(""); //add the logged in users person here as default
 
@@ -30,7 +28,6 @@ const Main = () => {
   });
 
   if (allData && !isGraphFinished) {
-    console.log("==============");
     const allPeople = allData.persons;
     const peopleNodeArr = [];
     const peopleEdgeArr = [];
@@ -75,7 +72,13 @@ const Main = () => {
     //add selection criteria to not switch if clicking away from a node
     select: function (event) {
       var { nodes, edges } = event;
-      setSelectedNode(nodes[0]);
+      console.log(nodes[0]);
+      if (nodes[0] === undefined) {
+        return;
+      }
+      if (nodes[0] === personId) {
+        setSelectedNode();
+      } else setSelectedNode(nodes[0]);
     },
   };
 
@@ -83,16 +86,16 @@ const Main = () => {
     <main>
       {Auth.loggedIn() ? (
         <>
+          <div id="mainSpace"> </div>
           <SinglePersonInfo current={selectedNode} />
           {isGraphFinished ? (
-            <>
-              <Graph
-                key={graphKey}
-                graph={graph}
-                options={options}
-                events={events}
-              />
-            </>
+            <Graph
+              id="graph"
+              key={graphKey}
+              graph={graph}
+              options={options}
+              events={events}
+            />
           ) : (
             <>
               <p>family tree is being rendered</p>

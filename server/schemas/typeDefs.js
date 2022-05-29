@@ -3,6 +3,13 @@ const { gql } = require("apollo-server-express");
 const typeDefs = gql`
   scalar Date
 
+  type LinkingCode {
+    _id: ID!
+    linkingCode: String!
+    userWhoIsLinking: String!
+    linkedToPerson: String!
+  }
+
   type User {
     _id: ID!
     name: String!
@@ -35,6 +42,21 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    createLink(
+      linkingCode: String!
+      userWhoIsLinking: String!
+      linkedToPerson: String!
+    ): LinkingCode
+
+    acceptLink(linkingCode: String!): LinkingCode
+
+    createLinkedUser(
+      userWhoIsLinking: String!
+      linkedToPerson: String!
+      email: String!
+      password: String!
+    ): Auth
+
     addPerson(
       name: String!
       deathDate: String

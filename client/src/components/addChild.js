@@ -23,9 +23,12 @@ const AddChild = (props) => {
     parents: [],
     children: [],
     isClose: false,
+    createdBy: props.createdBy,
   });
 
   const [selectVal, setSelectVal] = useState("");
+
+  const [error, setError] = useState("");
 
   const { loading: allLoading, data: allData } = useQuery(QUERY_PERSONS);
   const { loading: currentLoading, data: currentData } = useQuery(
@@ -76,15 +79,23 @@ const AddChild = (props) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
-    console.log(newParentName);
+
+    if (formState.parents.length === 0 && !newParentName) {
+      setError("Child must have a parent");
+      return;
+    }
+
     try {
       if (newParentName !== null) {
         console.log(newParentName);
         console.log("entering the new parent name");
         const newBlankParent = await createPerson({
           //creating the new parent
-          variables: { name: newParentName, isClose: false },
+          variables: {
+            name: newParentName,
+            isClose: false,
+            createdBy: formState.createdBy,
+          },
         });
         const NewParentId = newBlankParent.data.addPerson._id;
         console.log(newBlankParent);
@@ -96,6 +107,7 @@ const AddChild = (props) => {
             birthday: formState.birthday,
             birthday: formState.birthday,
             parents: [NewParentId, props.personId],
+            createdBy: formState.createdBy,
             children: [],
             isclose: formState.isClose,
           },
@@ -133,6 +145,7 @@ const AddChild = (props) => {
           birthday: "",
           parents: [],
           children: [],
+          createdBy: props.createdBy,
           isClose: false,
         });
         props.addChildHide(); //close the add child section upon completion
@@ -153,6 +166,7 @@ const AddChild = (props) => {
           console.log(parentToAdd);
           console.log("here is parents to add result");
         }
+        setError("");
         setNewParentName(null);
         setFormState({
           name: "",
@@ -160,9 +174,11 @@ const AddChild = (props) => {
           birthday: "",
           parents: [],
           children: [],
+          createdBy: props.createdBy,
           isClose: false,
         });
         props.addChildHide();
+        window.location.reload();
       }
     } catch (e) {
       console.error(e);
@@ -170,8 +186,19 @@ const AddChild = (props) => {
   };
 
   return (
-    <div>
+    <span id="addChild">
       <form onSubmit={handleFormSubmit}>
+        <label>
+          Other Parent: {selectVal}
+          <CreatableSelect
+            isMulti={false}
+            value={selectVal}
+            options={options}
+            closeMenuOnSelect={true}
+            onChange={handleMultiChange}
+          />
+        </label>
+
         <label>
           <br></br>
           Childs Name:
@@ -186,7 +213,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Childs Birthdate:
+          Birthdate:
           <input
             className="form-input"
             placeholder=" birthday"
@@ -198,7 +225,7 @@ const AddChild = (props) => {
         </label>
         <br></br>
         <label>
-          Childs deathDate:
+          Passed away:
           <input
             className="form-input"
             placeholder="deathDate"
@@ -209,29 +236,19 @@ const AddChild = (props) => {
           />
         </label>
         <br></br>
+
         <label>
-          Other Parent: {selectVal}
-          <CreatableSelect
-            isMulti={false}
-            value={selectVal}
-            options={options}
-            closeMenuOnSelect={true}
-            onChange={handleMultiChange}
-          />
-        </label>
-        <br></br>
-        <label>
-          Email on birthday
+          Email on birthday ?
           <input
             className="react-switch-checkbox"
             name="isClose"
             type="checkbox"
           />
         </label>
-
-        <input type="submit" value="Add Child" />
+        <br></br>
+        <button type="submit">Add Child</button>
       </form>
-    </div>
+    </span>
   );
 };
 

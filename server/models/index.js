@@ -1,3 +1,3 @@
-const { Person, User } = require("./Profile");
+const { Person, User, LinkingCode } = require("./Profile");
 
-module.exports = { Person, User };
+module.exports = { Person, User, LinkingCode };
